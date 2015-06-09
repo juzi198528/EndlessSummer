@@ -1,0 +1,86 @@
+{% extends "layout.html" %} {% load staticfiles %}
+{% block loadstyles %}
+<link
+	href="{% static 'bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css' %}"
+	rel="stylesheet">
+<link
+	href="{% static 'bower_components/datatables-responsive/css/dataTables.responsive.css' %}"
+	rel="stylesheet">
+<link rel="stylesheet" href="{% static 'bower_components/jquery/jquery-ui.css' %}">
+{% endblock %}
+{% block loadscripts %}
+<script
+	src="{% static 'bower_components/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script
+	src="{% static 'bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js' %}"></script>	
+	  
+  <script src="{% static 'bower_components/jquery/jquery-ui.js' %}"></script>
+  <script src="{% static 'bower_components/jquery/datepicker-zh-TW.js' %}"></script>
+{% endblock %}
+	
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">修理厂材料统计表</h1>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">库存记录  <span style="float: right">日期查找<input id="start" readonly="true" type="text"/>-<input type="text" readonly="true" id="end"/>&nbsp;&nbsp;<input type="button" id="searchBtn" onclick="reload()" value="搜索"/></span></div>
+			
+			<!-- /.panel-heading -->
+			<div class="panel-body">
+				<div class="dataTable_wrapper">
+					<table class="table table-striped table-bordered table-hover" id="parts_table">
+						<thead>
+							<tr>
+								<th>零件名称及规格</th>
+								<th>数量</th>
+								<th>单位</th>
+								<th>单价(元)</th>
+								<th>总价(元)</th>
+								<th>领取人</th>
+								<th>日期</th>
+								<th>备注</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+			<!-- /.panel-body -->
+		</div>
+		<!-- /.panel -->
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+{% endblock %}
+{% block script %}
+	<script>
+	$(document).ready(function() {
+		table = $('#parts_table').DataTable({
+	        "serverSide": true,
+	        "ajax": "/parts/loadAll",
+	        "responsive":"true",
+	        "searching": false
+        });
+		region = $.datepicker.regional["zh-TW"];
+		$("#start").datepicker(region);
+		$("#end").datepicker(region);
+	});
+	function reload(){
+		var start = '';
+		if($("#start").val()){
+			start = $("#start").val();
+		}
+		var end = '';
+		if($("#end").val()){
+			end = $("#end").val();
+		}
+		var url = "/parts/search?startDate="+start+"&endDate="+end;
+		table.ajax.url(url).load();
+	}
+	</script>
+{% endblock %}
