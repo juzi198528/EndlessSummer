@@ -29,7 +29,21 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
-			<div class="panel-heading">库存记录  <span style="float: right">日期查找<input id="start" readonly="true" type="text"/>-<input type="text" readonly="true" id="end"/>&nbsp;&nbsp;<input type="button" id="searchBtn" onclick="reload()" value="搜索"/></span></div>
+			<div class="panel-heading">库存记录 
+			 <span style="float: right"><span>总价:<span id="total_price"></span></span>&nbsp;&nbsp;
+			 领取人<select id="consumer"><option value=""></option>{% for p in persons %}
+			   <option value="{{p.id}}">
+			       {{p.name}}
+			   </option>
+			{% endfor %}</select>
+			负责人<select id="owner"><option value=""></option>
+			{% for p in owners %}
+			   <option value="{{p.id}}">
+			       {{p.name}}
+			   </option>
+			{% endfor %}
+			</select>
+			 日期查找<input id="start" type="text"/>-<input type="text" id="end"/>&nbsp;&nbsp;<input type="button" id="searchBtn" onclick="reload()" value="搜索"/></span></div>
 			
 			<!-- /.panel-heading -->
 			<div class="panel-body">
@@ -64,23 +78,36 @@
 	        "serverSide": true,
 	        "ajax": "/parts/loadAll",
 	        "responsive":"true",
-	        "searching": false
+	        "searching": false,
+	        "paging":false,
+	        "initComplete":function(settings,json){
+	        	updatePrice(json.totalPrice);
+	        }
         });
 		region = $.datepicker.regional["zh-TW"];
 		$("#start").datepicker(region);
 		$("#end").datepicker(region);
 	});
+	function updatePrice(price){
+		$('#total_price').text(price);
+	}
 	function reload(){
-		var start = '';
+		var params = [];
 		if($("#start").val()){
-			start = $("#start").val();
+			params.push('startDate='+$("#start").val());
 		}
 		var end = '';
 		if($("#end").val()){
-			end = $("#end").val();
+			params.push('endDate='+$("#end").val());
 		}
-		var url = "/parts/search?startDate="+start+"&endDate="+end;
-		table.ajax.url(url).load();
+		if($("#owner").val()){
+			params.push('owner='+$("#owner").val());
+		}
+		if($("#consumer").val()){
+			params.push('consumer='+$("#consumer").val());
+		}
+		var url = "/parts/search?"+params.join('&');
+		table.ajax.url(url).load(function(json){updatePrice(json.totalPrice);});
 	}
 	</script>
 {% endblock %}

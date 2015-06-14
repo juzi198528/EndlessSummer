@@ -17,8 +17,9 @@ class PartAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 class PartConsumeRecordAdmin(admin.ModelAdmin):
-    list_display = ('part', 'amount','price','consumer','createdAt','note')
-    search_fields = ['name','consumer']
+    list_display = ('part', 'amount','price','consumer','owner','createdAt','note')
+    search_fields = ['part__name','consumer__name']
+    list_filter = ('owner',)
 
 admin.site.register(Part,PartAdmin)
 admin.site.register(ConsumeRecord,PartConsumeRecordAdmin)

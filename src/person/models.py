@@ -20,7 +20,7 @@ class Employee(models.Model):
     )
     name = models.CharField(max_length=40,verbose_name="姓名",blank=False)
     mobile = models.CharField(max_length=13,verbose_name="手机号",blank=True)
-    category = models.IntegerField(verbose_name="类别",max_length=1,choices=CATEGORIES)
+    category = models.IntegerField(verbose_name="类别",max_length=1,choices=CATEGORIES,blank=True)
 
     def __unicode__(self):
         return self.name

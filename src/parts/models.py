@@ -8,7 +8,7 @@ class Part(models.Model):
         db_table = "parts"
         verbose_name = "修理厂零件库存记录"
         verbose_name_plural = "修理厂零件库存记录"
-
+        ordering = ['name']
     name = models.CharField(verbose_name="名称", max_length=255,blank=False)
     amount = models.IntegerField(verbose_name="总消耗数量",max_length=5,blank=True,editable=False,default=0)
     price = models.FloatField(verbose_name="单价",blank=False)
@@ -32,8 +32,8 @@ class ConsumeRecord(models.Model):
         verbose_name = "修理厂零件消耗记录"
         verbose_name_plural = "修理厂零件消耗记录"
     
-    owner = models.ForeignKey(Employee,verbose_name="负责人",blank=False,related_name="owner")
-    consumer = models.ForeignKey(Employee,verbose_name="领取人",blank=False)
+    owner = models.ForeignKey(Employee,verbose_name="负责人",blank=True,related_name="owner", limit_choices_to = { 'category': 3})
+    consumer = models.ForeignKey(Employee,verbose_name="领取人",blank=True,null=True,limit_choices_to = { 'category': 2})
     part = models.ForeignKey(Part,verbose_name="零件",blank=False)
     amount = models.PositiveSmallIntegerField(verbose_name="数量",max_length=5,blank=False)
     createdAt = models.DateField(verbose_name="领取时间")
