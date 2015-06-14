@@ -36,6 +36,10 @@ def search(request):
     if request.GET.has_key('consumer'):
         consumer = Employee.objects.get(pk=int(request.GET['consumer']))
         queries.append(Q(consumer=consumer))
+    if request.GET.has_key('part'):
+        partName = request.GET['part']
+        #parts = Part.objects.filter(name__contains=partName)
+        queries.append(Q(part__name__contains=partName))
     query = Q()
     for q in queries:
         query = query & q
