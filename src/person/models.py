@@ -11,12 +11,12 @@ class Employee(models.Model):
         verbose_name = '人员信息'
         verbose_name_plural = '人员信息'
     DRIVER = 1
-    REPAIR = 2
-    OTHER = 3
+    REPAIR_WORKER = 2
+    REPAIR_OWNER = 3
     CATEGORIES = (
          (DRIVER, '司机'),
-         (REPAIR, '修理工'),
-         (OTHER, '其他')
+         (REPAIR_WORKER, '修理工'),
+         (REPAIR_OWNER, '修理厂负责人')
     )
     name = models.CharField(max_length=40,verbose_name="姓名",blank=False)
     mobile = models.CharField(max_length=13,verbose_name="手机号",blank=True)

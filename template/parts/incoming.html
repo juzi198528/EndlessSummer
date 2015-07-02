@@ -29,13 +29,17 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
-			<div class="panel-heading">库存记录 <span style="float: right">零件<input id="part" type="text"/>
-			 &nbsp;&nbsp; 负责人&nbsp;&nbsp;<select id="owner"><option value=""></option>
+			<div class="panel-heading">入库记录 
+			 <span style="float: right"><span>总价:<span id="total_price"></span></span> &nbsp;&nbsp;
+			 零件<input id="part" type="text"/>&nbsp;&nbsp;
+			负责人<select id="owner"><option value=""></option>
 			{% for p in owners %}
 			   <option value="{{p.id}}">
 			       {{p.name}}
 			   </option>
-			{% endfor %}</select><input type="button" id="searchBtn" onclick="reload()" value="搜索"/></span></div>
+			{% endfor %}
+			</select>
+			 日期<input id="start" type="text"/>-<input type="text" id="end"/>&nbsp;&nbsp;<input type="button" id="searchBtn" onclick="reload()" value="搜索"/></span></div>
 			
 			<!-- /.panel-heading -->
 			<div class="panel-body">
@@ -44,11 +48,12 @@
 						<thead>
 							<tr>
 								<th>零件名称及规格</th>
-								<th>库存数量</th>
+								<th>数量</th>
 								<th>单位</th>
 								<th>单价(元)</th>
+								<th>总价(元)</th>
 								<th>负责人</th>
-								<th>更新日期</th>
+								<th>日期</th>
 								<th>备注</th>
 							</tr>
 						</thead>
@@ -67,21 +72,37 @@
 	$(document).ready(function() {
 		table = $('#parts_table').DataTable({
 	        "serverSide": true,
-	        "ajax": "/parts/loadAll",
+	        "ajax": "/parts/incoming/loadAll",
 	        "responsive":"true",
 	        "searching": false,
-	        "paging":false
+	        "paging":false,
+	        "initComplete":function(settings,json){
+	        	updatePrice(json.totalPrice);
+	        }
         });
+		region = $.datepicker.regional["zh-TW"];
+		$("#start").datepicker(region);
+		$("#end").datepicker(region);
 	});
+	function updatePrice(price){
+		$('#total_price').text(price);
+	}
 	function reload(){
 		var params = [];
 		if($("#part").val()){
 			params.push('part='+$("#part").val());
 		}
+		if($("#start").val()){
+			params.push('startDate='+$("#start").val());
+		}
+		var end = '';
+		if($("#end").val()){
+			params.push('endDate='+$("#end").val());
+		}
 		if($("#owner").val()){
 			params.push('owner='+$("#owner").val());
 		}
-		var url = "/parts/search?"+params.join('&');
+		var url = "/parts/incoming/search?"+params.join('&');
 		table.ajax.url(url).load();
 	}
 	</script>

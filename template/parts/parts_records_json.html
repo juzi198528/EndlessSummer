@@ -1,0 +1,1 @@
+{"recordsTotal": {{ parts|length }},"recordsFiltered": {{ parts|length }},"data": [{% for part in parts %}["{{part.name}}","{{part.remaining}}","{{part.unit}}","{{part.price}}", "{{part.owner.name}}","{{part.lastUpdateDateTime}}","{{part.note}}"]{% if not forloop.last %},{% endif %}{% endfor %}]}    
